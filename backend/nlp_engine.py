@@ -50,6 +50,17 @@ class NLPIntentEngine:
         ns3_mapping = self._map_to_ns3(intent)
         intent["ns3_params"] = ns3_mapping
         
+        # Recommend Topology based on intent keywords
+        star_keywords = ["central", "centralized", "hub", "spoke", "star", "management", "controller"]
+        mesh_keywords = ["mesh", "resilient", "fault-tolerant", "fault tolerance", "reliability", "redundancy", "redundant", "path", "distributed"]
+        
+        if any(kw in text_lower for kw in mesh_keywords):
+            intent["recommended_topology"] = "mesh"
+        elif any(kw in text_lower for kw in star_keywords):
+            intent["recommended_topology"] = "star"
+        else:
+            intent["recommended_topology"] = "tree"
+            
         return intent
 
     def _map_to_ns3(self, intent: dict) -> dict:

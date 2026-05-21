@@ -20,6 +20,7 @@ ns3_orchestrator = NS3Orchestrator()
 
 class ComplaintRequest(BaseModel):
     text: str
+    topology: str = "tree"
 
 @app.post("/api/optimize")
 async def optimize_network(request: ComplaintRequest):
@@ -31,7 +32,7 @@ async def optimize_network(request: ComplaintRequest):
         ns3_params = intent.get("ns3_params", {})
         
         # 3. Execute NS-3 Simulation & Collect Metrics
-        metrics = ns3_orchestrator.run_simulation(ns3_params)
+        metrics = ns3_orchestrator.run_simulation(ns3_params, request.topology)
         
         # Generate a confidence score based on keyword match depth (mocked as 94% for prototype)
         confidence_score = 94.5
@@ -42,6 +43,20 @@ async def optimize_network(request: ComplaintRequest):
             "ns3_parameters_applied": ns3_params,
             "metrics": metrics,
             "confidence_score": confidence_score
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/nlp")
+async def extract_nlp_intent(request: ComplaintRequest):
+    try:
+        # Only NLP Intent Understanding
+        intent = nlp_engine.extract_intent(request.text)
+        
+        return {
+            "status": "success",
+            "intent_parsed": intent,
+            "confidence_score": 94.5
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
