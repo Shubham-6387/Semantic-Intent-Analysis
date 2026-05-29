@@ -8,6 +8,7 @@ import TopologyComparison from '../components/TopologyComparison';
 
 export default function AIEngine() {
   const { 
+    theme,
     isLoading, 
     handleOptimize, 
     isOptimized, 
@@ -387,9 +388,9 @@ export default function AIEngine() {
 
   return (
     <div className="space-y-12 animate-in fade-in duration-700 pb-20">
-      <header className="mb-8 border-b border-zinc-800 pb-8">
-        <h1 className="text-4xl font-bold mb-3 tracking-tight">AI Optimization Engine</h1>
-        <p className="text-zinc-400 max-w-3xl text-lg">
+      <header className="mb-8 border-b border-zinc-200 dark:border-zinc-800 pb-8 transition-colors duration-300">
+        <h1 className="text-4xl font-bold mb-3 tracking-tight text-zinc-900 dark:text-white transition-colors duration-300">AI Optimization Engine</h1>
+        <p className="text-zinc-600 dark:text-zinc-400 max-w-3xl text-lg transition-colors duration-300">
           Describe the network issue in plain English. The N-FLOW Engine will concurrently reconfigure and run simulations for all three 50-node topologies in parallel, outputting comparative side-by-side performance indicators.
         </p>
       </header>
@@ -424,32 +425,32 @@ export default function AIEngine() {
               return (
                 <div 
                   key={key} 
-                  className={`bg-zinc-950 border rounded-2xl p-5 flex flex-col justify-between space-y-6 transition-all duration-500 ${
+                  className={`bg-white dark:bg-zinc-950 border rounded-2xl p-5 flex flex-col justify-between space-y-6 transition-all duration-500 ${
                     isDone 
-                      ? 'border-zinc-800 shadow-[0_10px_30px_rgba(0,0,0,0.5)]' 
-                      : 'border-zinc-900/60 opacity-90'
+                      ? 'border-zinc-200 dark:border-zinc-800 shadow-md dark:shadow-[0_10px_30px_rgba(0,0,0,0.5)]' 
+                      : 'border-zinc-150 dark:border-zinc-900/60 opacity-90'
                   }`}
                 >
                   {/* Title Bar */}
-                  <div className="flex items-center justify-between border-b border-zinc-900 pb-4">
+                  <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-900 pb-4 transition-colors duration-300">
                     <div className="flex items-center space-x-3">
-                      <div className={`p-2 rounded-xl bg-zinc-900 border border-zinc-800 ${isDone ? 'text-red-500' : 'text-zinc-600'}`}>
+                      <div className={`p-2 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 ${isDone ? 'text-red-500' : 'text-zinc-500 dark:text-zinc-600'}`}>
                         <Network className="w-4 h-4" />
                       </div>
-                      <h3 className="font-extrabold text-white tracking-wide text-sm uppercase">
+                      <h3 className="font-extrabold text-zinc-900 dark:text-white tracking-wide text-sm uppercase transition-colors duration-300">
                         {key === 'tree' ? 'Tree / CDN' : key === 'star' ? 'Star (Hub)' : 'Mesh (Lattice)'}
                       </h3>
                     </div>
                     
                     {/* Inline Stepper Step Indicator */}
-                    <div className="flex items-center space-x-1.5 bg-zinc-900 px-3 py-1 rounded-full border border-zinc-850">
+                    <div className="flex items-center space-x-1.5 bg-zinc-100 dark:bg-zinc-900 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 transition-colors duration-300">
                       {isDone ? (
                         <div className="flex items-center space-x-1">
                           <Check className="w-3.5 h-3.5 text-green-500 stroke-[3]" />
                           <span className="text-[10px] text-green-500 font-extrabold uppercase tracking-widest">Active</span>
                         </div>
                       ) : (
-                        <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest animate-pulse">
+                        <span className="text-[10px] font-bold text-zinc-550 dark:text-zinc-500 uppercase tracking-widest animate-pulse transition-colors duration-300">
                           {getStepLabel(currentStep)}
                         </span>
                       )}
@@ -458,7 +459,7 @@ export default function AIEngine() {
 
                   {/* Micro Procedure Indicators */}
                   {!isDone && currentStep >= 0 && (
-                    <div className="grid grid-cols-4 gap-2 bg-zinc-900/40 p-2 rounded-xl border border-zinc-900/80">
+                    <div className="grid grid-cols-4 gap-2 bg-zinc-50 dark:bg-zinc-900/40 p-2 rounded-xl border border-zinc-200 dark:border-zinc-900/80 transition-colors duration-300">
                       {stepIcons.map((step, sIdx) => {
                         const Icon = step.icon;
                         const isCompleted = currentStep > sIdx;
@@ -472,7 +473,7 @@ export default function AIEngine() {
                                 ? 'text-green-500 bg-green-500/5 border border-green-500/10' 
                                 : isActive 
                                   ? 'text-red-500 bg-red-500/5 border border-red-500/20 animate-pulse'
-                                  : 'text-zinc-600 border border-transparent'
+                                  : 'text-zinc-550 dark:text-zinc-650 border border-transparent'
                             }`}
                           >
                             <Icon className="w-3.5 h-3.5 mb-1" />
@@ -488,64 +489,65 @@ export default function AIEngine() {
                     status={state.status} 
                     currentTopology={key} 
                     heightClass="h-[280px]" 
+                    theme={theme}
                   />
 
                   {/* ALIGNED TELEMETRY SNAPSHOT GRID */}
                   {state.isOptimized && (
                     <div className="space-y-4">
-                      <h4 className="text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-zinc-900 pb-2">
+                      <h4 className="text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-zinc-150 dark:border-zinc-900 pb-2 transition-colors duration-300">
                         Telemetry Snapshot
                       </h4>
                       <div className="grid grid-cols-2 gap-3 text-center">
-                        <div className="bg-zinc-900/50 border border-zinc-900 p-2.5 rounded-xl">
+                        <div className="bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-900 p-2.5 rounded-xl transition-colors duration-300">
                           <p className="text-[9px] text-zinc-500 font-semibold uppercase tracking-wider mb-1">Throughput</p>
-                          <p className="font-extrabold text-white text-sm">
-                            {state.metrics?.current?.throughput} <span className="text-[10px] text-zinc-400 font-normal">Mbps</span>
+                          <p className="font-extrabold text-zinc-900 dark:text-white text-sm transition-colors duration-300">
+                            {state.metrics?.current?.throughput} <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-normal">Mbps</span>
                           </p>
                           <span className="text-[9px] font-bold text-green-500">{state.metrics?.current?.throughputTrend}</span>
                         </div>
-                        <div className="bg-zinc-900/50 border border-zinc-900 p-2.5 rounded-xl">
+                        <div className="bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-900 p-2.5 rounded-xl transition-colors duration-300">
                           <p className="text-[9px] text-zinc-500 font-semibold uppercase tracking-wider mb-1">Avg Latency</p>
-                          <p className="font-extrabold text-white text-sm">
-                            {state.metrics?.current?.latency} <span className="text-[10px] text-zinc-400 font-normal">ms</span>
+                          <p className="font-extrabold text-zinc-900 dark:text-white text-sm transition-colors duration-300">
+                            {state.metrics?.current?.latency} <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-normal">ms</span>
                           </p>
                           <span className="text-[9px] font-bold text-green-500">{state.metrics?.current?.latencyTrend}</span>
                         </div>
-                        <div className="bg-zinc-900/50 border border-zinc-900 p-2.5 rounded-xl">
+                        <div className="bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-900 p-2.5 rounded-xl transition-colors duration-300">
                           <p className="text-[9px] text-zinc-500 font-semibold uppercase tracking-wider mb-1">Packet Loss</p>
-                          <p className="font-extrabold text-white text-sm">
-                            {state.metrics?.current?.packetLoss}<span className="text-[10px] text-zinc-400 font-normal">%</span>
+                          <p className="font-extrabold text-zinc-900 dark:text-white text-sm transition-colors duration-300">
+                            {state.metrics?.current?.packetLoss}<span className="text-[10px] text-zinc-550 dark:text-zinc-400 font-normal">%</span>
                           </p>
-                          <span className="text-[9px] font-medium text-zinc-500">NS-3 Rate</span>
+                          <span className="text-[9px] font-medium text-zinc-500 dark:text-zinc-500 transition-colors duration-300">NS-3 Rate</span>
                         </div>
-                        <div className="bg-zinc-900/50 border border-zinc-900 p-2.5 rounded-xl">
+                        <div className="bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-900 p-2.5 rounded-xl transition-colors duration-300">
                           <p className="text-[9px] text-zinc-500 font-semibold uppercase tracking-wider mb-1">Jitter Ratio</p>
-                          <p className="font-extrabold text-white text-sm">
-                            {state.metrics?.current?.jitter} <span className="text-[10px] text-zinc-400 font-normal">ms</span>
+                          <p className="font-extrabold text-zinc-900 dark:text-white text-sm transition-colors duration-300">
+                            {state.metrics?.current?.jitter} <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-normal">ms</span>
                           </p>
-                          <span className="text-[9px] font-medium text-zinc-500">Deviation</span>
+                          <span className="text-[9px] font-medium text-zinc-500 dark:text-zinc-500 transition-colors duration-300">Deviation</span>
                         </div>
                       </div>
 
                       {/* Before vs After Alignment Table */}
-                      <div className="bg-zinc-900/30 border border-zinc-900 rounded-xl p-3.5 mt-2 space-y-2">
-                        <div className="flex items-center justify-between text-[9px] text-zinc-500 font-bold uppercase tracking-wider border-b border-zinc-900 pb-1.5">
+                      <div className="bg-zinc-50/50 dark:bg-zinc-900/30 border border-zinc-100 dark:border-zinc-900 rounded-xl p-3.5 mt-2 space-y-2 transition-colors duration-300">
+                        <div className="flex items-center justify-between text-[9px] text-zinc-500 font-bold uppercase tracking-wider border-b border-zinc-150 dark:border-zinc-900 pb-1.5 transition-colors duration-300">
                           <span>QoS Item</span>
                           <span>Before</span>
                           <span className="text-green-500">After</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                          <span className="text-zinc-500">Streaming Quality</span>
+                          <span className="text-zinc-550 dark:text-zinc-500">Streaming Quality</span>
                           <span className="text-zinc-400 line-through">{state.comparison?.before?.quality}</span>
-                          <span className="text-white font-bold">{state.comparison?.after?.quality}</span>
+                          <span className="text-zinc-900 dark:text-white font-bold transition-colors duration-300">{state.comparison?.after?.quality}</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                          <span className="text-zinc-500">Target Bandwidth</span>
+                          <span className="text-zinc-550 dark:text-zinc-500">Target Bandwidth</span>
                           <span className="text-zinc-400 line-through">{state.comparison?.before?.bandwidth}</span>
-                          <span className="text-white font-bold">{state.comparison?.after?.bandwidth}</span>
+                          <span className="text-zinc-900 dark:text-white font-bold transition-colors duration-300">{state.comparison?.after?.bandwidth}</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                          <span className="text-zinc-500">Path Congestion</span>
+                          <span className="text-zinc-550 dark:text-zinc-500">Path Congestion</span>
                           <span className="text-red-400 font-medium">{state.comparison?.before?.congestion}</span>
                           <span className="text-green-500 font-bold">{state.comparison?.after?.congestion}</span>
                         </div>
@@ -566,7 +568,7 @@ export default function AIEngine() {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-6"
         >
-          <TopologyComparison />
+          <TopologyComparison theme={theme} />
 
           <div className="pt-8 flex justify-center">
             <motion.button
@@ -574,7 +576,7 @@ export default function AIEngine() {
               whileTap={{ scale: 0.98 }}
               onClick={handleGenerateReport}
               disabled={reportGenerating}
-              className="flex items-center space-x-3 bg-zinc-900 hover:bg-zinc-800 text-white px-8 py-4 rounded-xl font-bold transition-all border border-zinc-800 shadow-lg"
+              className="flex items-center space-x-3 bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-900 dark:text-white px-8 py-4 rounded-xl font-bold transition-all border border-zinc-200 dark:border-zinc-800 shadow-lg cursor-pointer transition-colors duration-300"
             >
               {reportGenerating ? (
                 <div className="w-5 h-5 rounded-full border-2 border-white border-t-transparent animate-spin mr-2" />

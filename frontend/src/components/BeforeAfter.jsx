@@ -16,9 +16,9 @@ export default function BeforeAfter({ before, after }) {
   ];
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+    <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-sm dark:shadow-none transition-colors duration-300">
       <div className="flex">
-        <div className="flex-1 p-6 border-r border-zinc-800 bg-red-950/10">
+        <div className="flex-1 p-6 border-r border-zinc-200 dark:border-zinc-800 bg-red-500/5 dark:bg-red-950/10 transition-colors duration-300">
           <h3 className="text-red-500 font-bold mb-4 flex items-center space-x-2">
             <XCircle className="w-5 h-5" />
             <span>Before Optimization</span>
@@ -27,13 +27,13 @@ export default function BeforeAfter({ before, after }) {
             {features.map((f, i) => (
               <li key={i}>
                 <p className="text-xs text-zinc-500 mb-1">{f.label}</p>
-                <p className="text-zinc-300 font-medium">{f.b}</p>
+                <p className="text-zinc-700 dark:text-zinc-300 font-medium transition-colors duration-300">{f.b}</p>
               </li>
             ))}
           </ul>
         </div>
         
-        <div className="flex-1 p-6 bg-green-950/10">
+        <div className="flex-1 p-6 bg-green-500/5 dark:bg-green-950/10 transition-colors duration-300">
           <h3 className="text-green-500 font-bold mb-4 flex items-center space-x-2">
             <CheckCircle2 className="w-5 h-5" />
             <span>After Optimization</span>

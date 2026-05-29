@@ -222,15 +222,150 @@ main(int argc, char *argv[])
         anim.UpdateNodeDescription(users.Get(i), name.str());
     }
 
-    // -----------------------------
-    // RUN
-    // -----------------------------
-    Simulator::Stop(Seconds(10.0));
-    NS_LOG_UNCOND("Netflix CDN Topology with 50 Users Running...");
-    Simulator::Run();
+// -----------------------------
+// RUN
+// -----------------------------
+Simulator::Stop(Seconds(10.0));
 
-    flowmon->SerializeToXmlFile("flowmon.xml", true, true);
+NS_LOG_UNCOND("====================================");
+NS_LOG_UNCOND("Netflix CDN Topology with 50 Users");
+NS_LOG_UNCOND("====================================");
+NS_LOG_UNCOND("DataRate  : " << dataRate);
+NS_LOG_UNCOND("Delay     : " << delay);
+NS_LOG_UNCOND("ErrorRate : " << errorRateStr);
+NS_LOG_UNCOND("Bitrate   : " << bitrateStr);
 
-    Simulator::Destroy();
-    return 0;
+Simulator::Run();
+
+// -----------------------------
+// FLOWMONITOR RESULTS
+// -----------------------------
+flowmon->CheckForLostPackets();
+
+Ptr<Ipv4FlowClassifier> classifier =
+    DynamicCast<Ipv4FlowClassifier>(
+        flowmonHelper.GetClassifier());
+
+std::map<FlowId, FlowMonitor::FlowStats> stats =
+    flowmon->GetFlowStats();
+
+double totalThroughput = 0.0;
+double totalDelay = 0.0;
+double totalJitter = 0.0;
+uint32_t totalRxPackets = 0;
+uint32_t totalTxPackets = 0;
+uint32_t totalLostPackets = 0;
+uint32_t flowCount = 0;
+
+for (auto const &flow : stats)
+{
+    double throughput = 0.0;
+
+    if ((flow.second.timeLastRxPacket.GetSeconds() -
+         flow.second.timeFirstTxPacket.GetSeconds()) > 0)
+    {
+        throughput =
+            flow.second.rxBytes * 8.0 /
+            (flow.second.timeLastRxPacket.GetSeconds() -
+             flow.second.timeFirstTxPacket.GetSeconds()) /
+            1000000.0;
+    }
+
+    double avgDelay = 0.0;
+    double avgJitter = 0.0;
+
+    if (flow.second.rxPackets > 0)
+    {
+        avgDelay =
+            flow.second.delaySum.GetSeconds() /
+            flow.second.rxPackets;
+
+        avgJitter =
+            flow.second.jitterSum.GetSeconds() /
+            flow.second.rxPackets;
+    }
+
+    totalThroughput += throughput;
+    totalDelay += avgDelay;
+    totalJitter += avgJitter;
+    totalRxPackets += flow.second.rxPackets;
+    totalTxPackets += flow.second.txPackets;
+
+    totalLostPackets +=
+        (flow.second.txPackets -
+         flow.second.rxPackets);
+
+    flowCount++;
+}
+
+// -----------------------------
+// FINAL QoS METRICS
+// -----------------------------
+double avgThroughput =
+    (flowCount > 0)
+        ? totalThroughput / flowCount
+        : 0;
+
+double avgDelayMs =
+    (flowCount > 0)
+        ? (totalDelay / flowCount) * 1000
+        : 0;
+
+double avgJitterMs =
+    (flowCount > 0)
+        ? (totalJitter / flowCount) * 1000
+        : 0;
+
+double packetLossPercent =
+    (totalTxPackets > 0)
+        ? ((double)totalLostPackets /
+           totalTxPackets) * 100
+        : 0;
+
+// -----------------------------
+// PRINT RESULTS
+// -----------------------------
+std::cout << "\n\n";
+std::cout << "====================================\n";
+std::cout << " FINAL NETWORK PERFORMANCE METRICS \n";
+std::cout << "====================================\n";
+
+std::cout << "Average Throughput : "
+          << avgThroughput
+          << " Mbps\n";
+
+std::cout << "Average Delay      : "
+          << avgDelayMs
+          << " ms\n";
+
+std::cout << "Average Jitter     : "
+          << avgJitterMs
+          << " ms\n";
+
+std::cout << "Packet Loss        : "
+          << packetLossPercent
+          << " %\n";
+
+std::cout << "Tx Packets         : "
+          << totalTxPackets
+          << "\n";
+
+std::cout << "Rx Packets         : "
+          << totalRxPackets
+          << "\n";
+
+std::cout << "Lost Packets       : "
+          << totalLostPackets
+          << "\n";
+
+std::cout << "====================================\n";
+
+// Save FlowMonitor XML
+flowmon->SerializeToXmlFile(
+    "flowmon.xml",
+    true,
+    true);
+
+Simulator::Destroy();
+return 0;
 }

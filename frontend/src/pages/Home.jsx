@@ -15,8 +15,8 @@ export default function Home() {
   return (
     <div className="min-h-[calc(100vh-4rem)] flex flex-col justify-center relative overflow-hidden -mt-8 py-16">
       {/* Background Effects */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-red-900/20 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-900/20 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-red-900/10 dark:bg-red-900/20 rounded-full blur-[120px] pointer-events-none transition-colors duration-300" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-900/10 dark:bg-indigo-900/20 rounded-full blur-[100px] pointer-events-none transition-colors duration-300" />
       
       <div className="relative z-10 max-w-5xl mx-auto px-4 w-full">
         <motion.div 
@@ -25,9 +25,9 @@ export default function Home() {
           transition={{ duration: 0.7 }}
           className="text-center mb-16"
         >
-          <div className="inline-flex items-center space-x-2 bg-zinc-900/50 border border-zinc-800 rounded-full px-4 py-1.5 mb-8">
+          <div className="inline-flex items-center space-x-2 bg-zinc-150 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-full px-4 py-1.5 mb-8 transition-colors duration-300">
             <span className="flex h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
-            <span className="text-xs font-semibold tracking-widest text-zinc-300 uppercase">N-FLOW Platform v2.0</span>
+            <span className="text-xs font-semibold tracking-widest text-zinc-600 dark:text-zinc-300 uppercase">N-FLOW Platform v2.0</span>
           </div>
           
           <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter leading-tight">
@@ -37,7 +37,7 @@ export default function Home() {
             </span>
           </h1>
           
-          <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+          <p className="text-lg md:text-xl text-zinc-650 dark:text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed transition-colors duration-300">
             Translate natural language complaints into instant, intelligent network configurations. 
             N-FLOW automatically analyzes your intent, simulates changes in NS-3, and adapts your topology in real-time.
           </p>
@@ -46,7 +46,7 @@ export default function Home() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/engine')}
-            className="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-200 bg-red-600 rounded-xl hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600 focus:ring-offset-zinc-950 overflow-hidden"
+            className="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-200 bg-red-600 rounded-xl hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600 focus:ring-offset-white dark:focus:ring-offset-zinc-950 overflow-hidden cursor-pointer"
           >
             <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.2)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.2)_1px,transparent_1px)] bg-[size:10px_10px] opacity-20" />
             <span className="relative flex items-center space-x-2">
@@ -63,10 +63,10 @@ export default function Home() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
         >
           {features.map((feature, idx) => (
-            <div key={idx} className="bg-zinc-900/50 border border-zinc-800/50 p-6 rounded-2xl backdrop-blur-sm hover:bg-zinc-800/50 transition-colors">
+            <div key={idx} className="bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800/50 p-6 rounded-2xl backdrop-blur-sm hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-all duration-300 shadow-sm dark:shadow-none hover:shadow-md">
               <feature.icon className="w-8 h-8 text-red-500 mb-4" />
-              <h3 className="text-white font-bold mb-2">{feature.title}</h3>
-              <p className="text-zinc-400 text-sm leading-relaxed">{feature.desc}</p>
+              <h3 className="text-zinc-900 dark:text-white font-bold mb-2 transition-colors duration-300">{feature.title}</h3>
+              <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed transition-colors duration-300">{feature.desc}</p>
             </div>
           ))}
         </motion.div>

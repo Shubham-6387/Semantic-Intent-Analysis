@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BrowserRouter, Routes, Route, NavLink, Outlet } from 'react-router-dom';
-import { Activity, ShieldCheck, Zap } from 'lucide-react';
+import { Activity, ShieldCheck, Zap, Sun, Moon } from 'lucide-react';
 
 import Home from './pages/Home';
 import AIEngine from './pages/AIEngine';
@@ -11,29 +11,29 @@ const defaultMetrics = {
   history: Array.from({ length: 20 }).map((_, i) => ({ time: `T-${20-i}`, throughput: 3 + Math.random() * 2, latency: 110 + Math.random() * 30, jitter: 40 + Math.random() * 10 }))
 };
 
-function Layout({ confidence, ...contextState }) {
+function Layout({ confidence, theme, toggleTheme, ...contextState }) {
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-red-500/30">
-      <nav className="border-b border-zinc-800 bg-zinc-950 sticky top-0 z-50">
+    <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-white font-sans selection:bg-red-500/30 transition-colors duration-300">
+      <nav className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 sticky top-0 z-50 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-8">
             <div className="flex items-center space-x-2">
               <span className="text-red-600 font-black text-2xl tracking-tighter">N-FLOW</span>
-              <span className="text-zinc-500 font-medium text-xs tracking-widest uppercase border-l border-zinc-700 pl-2 ml-2 hidden sm:block">V2 Advanced Engine</span>
+              <span className="text-zinc-550 dark:text-zinc-500 font-medium text-xs tracking-widest uppercase border-l border-zinc-300 dark:border-zinc-700 pl-2 ml-2 hidden sm:block">V2 Advanced Engine</span>
             </div>
             
             {/* Navigation Links */}
-            <div className="hidden md:flex space-x-1 border border-zinc-800 rounded-lg p-1 bg-zinc-900/50">
-              <NavLink to="/" className={({isActive}) => `px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${isActive ? 'bg-zinc-800 text-white shadow-sm' : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'}`}>Home</NavLink>
-              <NavLink to="/engine" className={({isActive}) => `px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${isActive ? 'bg-zinc-800 text-white shadow-sm' : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'}`}>AI Engine</NavLink>
+            <div className="hidden md:flex space-x-1 border border-zinc-200 dark:border-zinc-800 rounded-lg p-1 bg-zinc-100 dark:bg-zinc-900/50 transition-colors duration-300">
+              <NavLink to="/" className={({isActive}) => `px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${isActive ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm border border-zinc-200 dark:border-zinc-700' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-250 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50'}`}>Home</NavLink>
+              <NavLink to="/engine" className={({isActive}) => `px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${isActive ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm border border-zinc-200 dark:border-zinc-700' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-250 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50'}`}>AI Engine</NavLink>
             </div>
           </div>
           
-          <div className="flex items-center space-x-6 text-sm text-zinc-400">
+          <div className="flex items-center space-x-6 text-sm text-zinc-600 dark:text-zinc-400 transition-colors duration-300">
             {confidence && (
-              <div className="flex items-center space-x-1 px-3 py-1 bg-zinc-900 rounded-full border border-zinc-800">
+              <div className="flex items-center space-x-1 px-3 py-1 bg-white dark:bg-zinc-900 rounded-full border border-zinc-200 dark:border-zinc-800 transition-colors duration-300">
                 <span className="text-green-500 font-bold">{confidence}%</span>
-                <span className="text-xs">AI Confidence</span>
+                <span className="text-xs animate-pulse">AI Confidence</span>
               </div>
             )}
             <div className="hidden lg:flex items-center space-x-6">
@@ -41,12 +41,21 @@ function Layout({ confidence, ...contextState }) {
               <div className="flex items-center space-x-1"><ShieldCheck className="w-4 h-4"/><span>Secure</span></div>
               <div className="flex items-center space-x-1"><Zap className="w-4 h-4 text-yellow-500"/><span>Zero-touch</span></div>
             </div>
+
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-650 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-all cursor-pointer shadow-sm dark:shadow-none"
+              title="Toggle theme"
+            >
+              {theme === 'dark' ? <Sun className="w-4 h-4 text-yellow-500" /> : <Moon className="w-4 h-4 text-indigo-600" />}
+            </button>
           </div>
         </div>
       </nav>
 
       <main className="max-w-7xl mx-auto px-4 py-8">
-        <Outlet context={contextState} />
+        <Outlet context={{ theme, ...contextState }} />
       </main>
     </div>
   );
@@ -256,7 +265,26 @@ export default function App() {
     setIsOptimized(true);
   };
 
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('theme') || 'dark';
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
   const contextState = {
+    theme,
     runStates,
     isLoading,
     isOptimized,
@@ -269,7 +297,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Layout confidence={confidence} {...contextState} />}>
+        <Route path="/" element={<Layout confidence={confidence} theme={theme} toggleTheme={toggleTheme} {...contextState} />}>
           <Route index element={<Home />} />
           <Route path="engine" element={<AIEngine />} />
         </Route>

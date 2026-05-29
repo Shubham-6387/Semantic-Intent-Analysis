@@ -1,7 +1,7 @@
 import { Server, Router, MonitorSmartphone, Database, ShieldAlert } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function NetworkTopology({ status, currentTopology = 'tree', heightClass = 'h-[450px]' }) {
+export default function NetworkTopology({ status, currentTopology = 'tree', heightClass = 'h-[450px]', theme }) {
   const isTrafficActive = status?.isOptimizing || false;
   const nodeStatus = status?.nodes || {};
   const linkStatus = status?.links || {};
@@ -151,7 +151,7 @@ export default function NetworkTopology({ status, currentTopology = 'tree', heig
     if (node.type === 'core') return '#a855f7'; // Purple
     if (node.type === 'cdn') return '#3b82f6'; // Blue
     if (node.type === 'hub') return '#ec4899'; // Pink
-    return '#71717a'; // Zinc
+    return theme === 'light' ? '#a1a1aa' : '#71717a'; // Zinc
   };
 
   // 3. Link styling and dynamic dashed animation flows
@@ -164,25 +164,25 @@ export default function NetworkTopology({ status, currentTopology = 'tree', heig
       case 'congested':
         return { stroke: '#eab308', strokeWidth: 1.8, opacity: 0.6, strokeDasharray: '10,12', flowColor: '#eab308', flowSpeed: '4s' };
       default:
-        return { stroke: '#27272a', strokeWidth: 1.2, opacity: 0.5, strokeDasharray: '5,5', flowColor: '#6366f1', flowSpeed: '2s' };
+        return { stroke: theme === 'light' ? '#d4d4d8' : '#27272a', strokeWidth: 1.2, opacity: 0.5, strokeDasharray: '5,5', flowColor: '#6366f1', flowSpeed: '2s' };
     }
   };
 
   return (
-    <div className={`bg-zinc-950 border border-zinc-800 rounded-xl p-6 relative overflow-hidden ${heightClass} w-full select-none`}>
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-zinc-900/40 via-zinc-950 to-zinc-950 z-0"></div>
+    <div className={`bg-white dark:bg-zinc-955 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 relative overflow-hidden ${heightClass} w-full select-none transition-colors duration-300`}>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-zinc-50/50 dark:from-zinc-900/40 via-white dark:via-zinc-950 to-white dark:to-zinc-955 z-0 transition-colors duration-300"></div>
       
       {/* Dynamic Scanline Grid Effect */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:25px_25px] z-0"></div>
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:25px_25px] z-0 transition-colors duration-300"></div>
 
       <div className="absolute top-4 left-4 flex items-center space-x-2 z-10">
         <span className="flex h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse"></span>
-        <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest">
-          NS-3 Active Visualizer: <span className="text-white ml-1">{currentTopology.toUpperCase()} (50 NODES)</span>
+        <h3 className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest transition-colors duration-300">
+          NS-3 Active Visualizer: <span className="text-zinc-900 dark:text-white ml-1 transition-colors duration-300">{currentTopology.toUpperCase()} (50 NODES)</span>
         </h3>
       </div>
 
-      <div className="absolute top-4 right-4 flex items-center space-x-4 text-[10px] text-zinc-500 font-semibold uppercase tracking-wider z-10 bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 px-3 py-1 rounded-full">
+      <div className="absolute top-4 right-4 flex items-center space-x-4 text-[10px] text-zinc-500 dark:text-zinc-400 font-semibold uppercase tracking-wider z-10 bg-zinc-50/90 dark:bg-zinc-900/50 backdrop-blur-sm border border-zinc-200 dark:border-zinc-800 px-3 py-1 rounded-full transition-colors duration-300">
         <div className="flex items-center space-x-1"><span className="w-2.5 h-2.5 rounded-full bg-indigo-500/80 inline-block mr-1"></span>Normal</div>
         <div className="flex items-center space-x-1"><span className="w-2.5 h-2.5 rounded-full bg-green-500/80 inline-block mr-1"></span>Optimized</div>
         <div className="flex items-center space-x-1"><span className="w-2.5 h-2.5 rounded-full bg-yellow-500/80 inline-block mr-1"></span>Congested</div>
@@ -221,9 +221,10 @@ export default function NetworkTopology({ status, currentTopology = 'tree', heig
                   y1={fromNode.y}
                   x2={toNode.x}
                   y2={toNode.y}
-                  stroke="#1c1c1e"
+                  stroke={theme === 'light' ? '#f4f4f5' : '#1c1c1e'}
                   strokeWidth={style.strokeWidth * 0.8}
                   strokeLinecap="round"
+                  className="transition-colors duration-300"
                 />
                 {/* Active Dash Fiber Flows */}
                 <line
@@ -274,7 +275,7 @@ export default function NetworkTopology({ status, currentTopology = 'tree', heig
                   cx={node.x}
                   cy={node.y}
                   r={size / 2}
-                  fill="#09090b"
+                  fill={theme === 'light' ? '#ffffff' : '#09090b'}
                   stroke={color}
                   strokeWidth={isUser ? 0.6 : 1.2}
                   className="transition-all duration-300"
@@ -286,10 +287,10 @@ export default function NetworkTopology({ status, currentTopology = 'tree', heig
                     x={node.x}
                     y={node.y - (size * 0.8)}
                     textAnchor="middle"
-                    fill="#a1a1aa"
+                    fill={theme === 'light' ? '#52525b' : '#a1a1aa'}
                     fontSize={2.5}
                     fontWeight="bold"
-                    className="pointer-events-none select-none bg-zinc-950"
+                    className="pointer-events-none select-none transition-colors duration-300"
                   >
                     {node.label}
                   </text>
